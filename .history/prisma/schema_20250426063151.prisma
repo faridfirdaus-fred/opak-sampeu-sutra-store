@@ -1,0 +1,10 @@
+generator client {
+  provider = "prisma-client-js" // Prisma Client untuk mengakses database
+}
+
+datasource db {
+  provider = "mongodb" // Menggunakan MongoDB sebagai database
+  url      = env("DATABASE_URL") // URL database diambil dari environment variable
+}
+
+

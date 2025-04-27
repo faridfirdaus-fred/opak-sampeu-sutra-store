@@ -1,0 +1,23 @@
+"use client";
+
+import { ReactNode } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { usePathname } from "next/navigation";
+import "./globals.css";
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
+  const isAdminRoute = pathname?.startsWith("/admin") ?? false;
+
+  return ( <SessionProvider></SessionProvider>
+    <html lang="en">
+      <body>
+        {!isAdminRoute && <Navbar />}
+        {children}
+        {!isAdminRoute && <Footer />}
+      </body>
+    </html>
+  );
+}
