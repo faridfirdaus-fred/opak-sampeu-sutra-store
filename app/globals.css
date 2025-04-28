@@ -6,6 +6,7 @@
   --breakpoint-3xl: 120rem;
   --color-primer: #FF7722;
   --color-darken-primer: #FF6600;
+  --color-hytam: #272727;
 }
 @theme inline {
   --color-background: var(--background);

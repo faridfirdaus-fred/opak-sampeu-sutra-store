@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import Checkout from "@/components/Checkout";
 
 interface DetailProductProps {
@@ -25,26 +24,28 @@ export default function DetailProduct({
   category,
 }: DetailProductProps) {
   return (
-    <div className="flex flex-col md:flex-row gap-8">
+    <div className="flex mb-20 mt-10 flex-col md:flex-row gap-8 px-20 py-6 bg-white rounded-lg shadow-md">
       {/* Product Image */}
-      <div className="flex-1">
+      <div className="flex-1 max-w-md py-10 mx-auto md:mx-0">
+        {" "}
+        {/* Batasi lebar gambar */}
         <Image
           src={imageUrl}
           alt={name}
-          width={500}
-          height={500}
-          className="object-cover rounded-md"
+          width={400}
+          height={400}
+          className="w-[400px] h-[400px] object-cover rounded-md"
         />
       </div>
 
       {/* Product Details */}
-      <div className="flex-1 flex flex-col gap-4">
+      <div className="flex-1 py-10 flex flex-col gap-4">
         <div>
           <h1 className="text-2xl font-bold">{name}</h1>
-          <p className="text-sm text-muted-foreground">{category}</p>
+          <p className="text-sm text-gray-500">{category}</p>
         </div>
-        <p className="text-lg">{description}</p>
-        <p className="text-2xl font-bold text-primary">
+        <p className="text-lg text-gray-700">{description}</p>
+        <p className="text-2xl font-bold text-green-600">
           Rp{price.toLocaleString()}
         </p>
         <Badge
@@ -55,7 +56,13 @@ export default function DetailProduct({
         </Badge>
 
         {/* Checkout Component */}
-        <Checkout productId={id} stock={stock} price={price} name={name} />
+        <Checkout
+          productId={id}
+          stock={stock}
+          price={price}
+          name={name}
+          imageUrl={imageUrl} // Teruskan imageUrl
+        />
       </div>
     </div>
   );

@@ -1,17 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
+import { FaShoppingCart } from "react-icons/fa";
+import { useCart } from "@/context/CartContext";
+import Notification from "@/components/Notification"; // Import Notification
 
 interface ProductCardProps {
   id: string;
@@ -19,8 +17,6 @@ interface ProductCardProps {
   imageUrl: string;
   stock: number;
   price: number;
-  onCheckout: () => void;
-  onAddToCart: () => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -29,64 +25,123 @@ const ProductCard: React.FC<ProductCardProps> = ({
   imageUrl,
   stock,
   price,
-  onCheckout,
-  onAddToCart,
 }) => {
   const router = useRouter();
+  const { addToCart } = useCart();
+  const [notification, setNotification] = useState<string | null>(null);
+
+  const handleImageClick = () => {
+    router.push(`/shop/${id}`);
+  };
+
+const handleAddToCart = async () => {
+  try {
+    // Tambahkan ke local cart
+    addToCart({
+      id,
+      productId: id,
+      name,
+      price,
+      quantity: 1,
+      imageUrl,
+    });
+
+    // Kirim ke server dengan container yang valid
+    const response = await fetch("/api/cart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productId: id,
+        quantity: 1,
+        container: "TOPLES", // Gunakan nilai enum yang valid
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Failed to add item to cart:", errorData);
+      throw new Error("Gagal tambah ke keranjang server");
+    }
+
+    setNotification("Produk berhasil ditambahkan ke keranjang!");
+    setTimeout(() => setNotification(null), 3000);
+  } catch (error) {
+    console.error(error);
+    setNotification("Gagal menambahkan produk ke keranjang!");
+    setTimeout(() => setNotification(null), 3000);
+  }
+};
+
 
   return (
-    <Card className="overflow-hidden h-full flex flex-col">
-      <div
-        className="relative cursor-pointer overflow-hidden"
-        onClick={() => router.push(`/shop/${id}`)}
+    <>
+      {notification && <Notification message={notification} type="success" />}
+      <motion.div
+        className="h-full"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        {/* Product Image */}
-        <div className="h-64 relative">
-          <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+        <Card className="overflow-hidden h-full flex flex-col shadow-md transition-transform transform hover:shadow-2xl bg-slate-100">
+          <div
+            className="relative cursor-pointer overflow-hidden group"
+            onClick={handleImageClick}
+          >
+            <div className="px-6">
+              <div className="relative h-48 w-full overflow-hidden rounded-md border-1">
+                <Image
+                  src={imageUrl}
+                  alt={name}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
+            </div>
 
-          {/* Stock Badge */}
-          <div className="absolute top-2 right-2">
-            <Badge
-              variant={stock > 0 ? "secondary" : "destructive"}
-              className="backdrop-blur-sm"
-            >
-              {stock > 0 ? `Stok: ${stock}` : "Habis"}
-            </Badge>
+            <div className="absolute top-2 right-2">
+              <Badge
+                variant={stock > 0 ? "secondary" : "destructive"}
+                className="backdrop-blur-sm bg-slate-100 text-black text-sm px-3 py-1 rounded-full"
+              >
+                {stock > 0 ? `Stok: ${stock}` : "Habis"}
+              </Badge>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <CardHeader className="p-4 pb-0">
-        <h3 className="text-lg font-semibold line-clamp-2">{name}</h3>
-      </CardHeader>
+          <CardTitle className="px-6 py-0">
+            <h3 className="text-xl font-semibold line-clamp-2 text-gray-800">
+              {name}
+            </h3>
+          </CardTitle>
 
-      <CardContent className="p-4 pt-2 flex-grow">
-        <p className="text-xl font-bold text-primary">
-          Rp{price.toLocaleString()}
-        </p>
-      </CardContent>
+          <CardContent className="px-6 flex-grow">
+            <p className="text-md text-gray-">
+              Rp{new Intl.NumberFormat("id-ID").format(price)}
+            </p>
+          </CardContent>
+          <CardFooter className="px-6 pt-0 flex gap-2">
+            <Button
+              onClick={() => router.push(`/shop/${id}`)}
+              disabled={stock <= 0}
+              className="flex-1 bg-primer hover:bg-white hover:text-primer text-white rounded-lg shadow-sm transition-all duration-200"
+            >
+              Beli Sekarang
+            </Button>
 
-      <CardFooter className="p-4 pt-0 flex gap-2">
-        <Button onClick={onCheckout} disabled={stock <= 0} className="flex-1">
-          Beli Sekarang
-        </Button>
-
-        <Button
-          onClick={onAddToCart}
-          disabled={stock <= 0}
-          variant="outline"
-          size="icon"
-        >
-          <FiShoppingCart />
-        </Button>
-      </CardFooter>
-    </Card>
+            <Button
+              onClick={handleAddToCart}
+              disabled={stock <= 0}
+              variant="outline"
+              size="icon"
+              className="hover:bg-primer transition-all duration-200 hover:text-white text-primer rounded-lg shadow-sm"
+            >
+              <FaShoppingCart />
+            </Button>
+          </CardFooter>
+        </Card>
+      </motion.div>
+    </>
   );
 };
 

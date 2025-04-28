@@ -13,107 +13,144 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 text-gray-800">
-      <div className="mx-auto px-6 lg:px-20 py-12">
-        {/* Footer Grid */}
+    <footer className="bg-hytam text-gray-100 rounded-t-4xl">
+      <div className="container mx-auto px-6 lg:px-20 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Company Info */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold mb-4">Opak Sampeu Sutra</h3>
-            <p className="text-gray-600">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold">Opak Sampeu Sutra</h3>
+            <p className="text-gray-200 leading-relaxed">
               Kami adalah perusahaan yang menyediakan produk berkualitas tinggi
               untuk memenuhi kebutuhan pelanggan kami.
             </p>
 
-            <div className="mt-6">
-              <h4 className="font-semibold mb-2">Sosial Media</h4>
-              <div className="flex space-x-4 mt-2">
+            <div>
+              <h4 className="font-semibold text-lg">Sosial Media</h4>
+              <div className="flex items-center space-x-4 mt-4">
                 <Link
                   href="https://instagram.com/opaksampeu_sutra"
                   target="_blank"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="group flex items-center gap-2 text-gray-200 hover:text-primer transition-colors"
                 >
-                  <FaInstagram className="text-2xl" />
+                  <FaInstagram className="text-xl group-hover:text-primer transition-colors" />
+                  <span className="group-hover:text-primer transition-colors">
+                    @opaksampeu_sutra
+                  </span>
                 </Link>
               </div>
-              <p className="text-sm mt-2">opaksampeu_sutra</p>
             </div>
           </div>
 
           {/* Navigation */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold mb-4">Halaman</h3>
-            <ul className="space-y-2">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold">Halaman</h3>
+            <ul className="space-y-4">
               <li>
                 <Link
                   href="/"
-                  className="text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
+                  className="group flex items-center gap-3 text-gray-200 hover:text-primer transition-colors"
                 >
-                  <FaHome /> Beranda
+                  <FaHome className="text-lg group-hover:text-primer transition-colors" />
+                  <span className="group-hover:text-primer transition-colors">
+                    Beranda
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link
                   href="/about-us"
-                  className="text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
+                  className="group flex items-center gap-3 text-gray-200 hover:text-primer transition-colors"
                 >
-                  <FaInfoCircle /> Tentang
+                  <FaInfoCircle className="text-lg group-hover:text-primer transition-colors" />
+                  <span className="group-hover:text-primer transition-colors">
+                    Tentang
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link
                   href="/shop"
-                  className="text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
+                  className="group flex items-center gap-3 text-gray-200 hover:text-primer transition-colors"
                 >
-                  <FaShoppingBag /> Belanja
+                  <FaShoppingBag className="text-lg group-hover:text-primer transition-colors" />
+                  <span className="group-hover:text-primer transition-colors">
+                    Belanja
+                  </span>
                 </Link>
               </li>
             </ul>
 
-            {/* Contact Info */}
-            <div className="mt-8">
-              <h4 className="font-semibold mb-4">Kontak</h4>
-              <div className="space-y-3">
-                <div className="flex items-start gap-2">
-                  <FaPhone className="mt-1 text-primary" />
-                  <p>+6282129091953</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <FaEnvelope className="mt-1 text-primary" />
-                  <p>opaksampeusutra@gmail.com</p>
-                </div>
+            <h3 className="text-2xl font-bold">Kontak</h3>
+            <div className="space-y-4">
+              <div>
+                <Link
+                  href="https://wa.me/6282129091953"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-2 text-gray-200 hover:text-primer transition-colors"
+                >
+                  <FaPhone className="text-lg group-hover:text-primer transition-colors" />
+                  <span className="group-hover:text-primer transition-colors">
+                    +6282129091953
+                  </span>
+                </Link>
+              </div>
+              <div>
+                <Link
+                  href="mailto:opaksampeusutra@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-2 text-gray-200 hover:text-primer transition-colors"
+                >
+                  <FaEnvelope className="text-lg group-hover:text-primer transition-colors" />
+                  <span className="group-hover:text-primer transition-colors">
+                    opaksampeusutra@gmail.com
+                  </span>
+                </Link>
               </div>
             </div>
           </div>
 
           {/* Location */}
           <div className="space-y-6">
-            <div>
-              <h4 className="font-semibold mb-4">Lokasi</h4>
-              <div className="space-y-4">
-                <div className="flex items-start gap-2">
-                  <FaMapMarkerAlt className="mt-1 text-primary flex-shrink-0" />
-                  <p className="text-sm">
-                    Jl. Sukagalih aspol No.1, Cipedes, Kec. Sukajadi, Kota
+            <h3 className="text-2xl font-bold">Lokasi</h3>
+            <div className="space-y-4 mt-4">
+              <div>
+                <Link
+                  href="https://maps.google.com/?q=Jl.+Sukagalih+Aspol+No.1,+Cipedes,+Kec.+Sukajadi,+Kota+Bandung,+Jawa+Barat+40162"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-start gap-3 text-gray-200 hover:text-primer transition-colors"
+                >
+                  <FaMapMarkerAlt className="text-lg group-hover:text-primer transition-colors" />
+                  <p className="text-sm group-hover:text-primer transition-colors">
+                    Jl. Sukagalih Aspol No.1, Cipedes, Kec. Sukajadi, Kota
                     Bandung, Jawa Barat 40162 (Bandung)
                   </p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <FaMapMarkerAlt className="mt-1 text-primary flex-shrink-0" />
-                  <p className="text-sm">
+                </Link>
+              </div>
+              <div>
+                <Link
+                  href="https://maps.google.com/?q=M6PH%2BXR3,+Jl.+Raya+Nusa+Indah,+Sukamanah,+Kec.+Cipedes,+Kab.+Tasikmalaya,+Jawa+Barat+46131"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-start gap-3 text-gray-200 hover:text-primer transition-colors"
+                >
+                  <FaMapMarkerAlt className="text-lg group-hover:text-primer transition-colors" />
+                  <p className="text-sm group-hover:text-primer transition-colors">
                     M6PH+XR3, Jl. Raya Nusa Indah, Sukamanah, Kec. Cipedes, Kab.
                     Tasikmalaya, Jawa Barat 46131 (Tasikmalaya)
                   </p>
-                </div>
+                </Link>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Copyright */}
-        <div className="border-t border-gray-200 mt-12 pt-6 text-center text-sm">
-          <p>© 2024 Opak Sampeu Sutra. Semua Hak Dilindungi.</p>
-        </div>
+      {/* Copyright */}
+      <div className="border-t border-gray-700 mt-12 pt-6 text-center text-sm text-gray-200">
+        <p>© 2024 Opak Sampeu Sutra. Semua Hak Dilindungi.</p>
       </div>
     </footer>
   );

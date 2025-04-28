@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/sidebar";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import router
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 const DEFAULT_AVATAR_BASE64 =
@@ -47,11 +48,7 @@ const data = {
     }
   ],
   navBottom: [
-    {
-      title: "Settings",
-      url: "/admin/settings",
-      icon: IconSettings,
-    },
+   
     {
       title: "Logout",
       url: "/logout",
@@ -67,6 +64,23 @@ const data = {
 
 export function AppSidebar({ ...props }) {
   const pathname = usePathname();
+  const router = useRouter(); // Gunakan router untuk navigasi
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/admin/logout", {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        router.push("/admin/login"); // Arahkan ke halaman login
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   return (
     <Sidebar
@@ -152,11 +166,28 @@ export function AppSidebar({ ...props }) {
 
         <div className="mt-8 mb-2 px-4">
           <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Settings
+            Keluar
           </h2>
         </div>
         <SidebarMenu>
           {data.navBottom.map((item, index) => {
+            if (item.title === "Logout") {
+              return (
+                <SidebarMenuItem key={index} className="my-1.5">
+                  <SidebarMenuButton
+                    onClick={handleLogout} // Panggil handleLogout saat logout diklik
+                    className="flex items-center gap-3 py-3 px-4 rounded-lg transition-all duration-200 text-red-500 hover:bg-red-50"
+                  >
+                    <item.icon
+                      strokeWidth={1.8}
+                      className="w-5 h-5 text-red-500"
+                    />
+                    <span className="font-medium">{item.title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            }
+
             const isActive = pathname === item.url;
 
             return (
@@ -168,8 +199,7 @@ export function AppSidebar({ ...props }) {
                       "flex items-center gap-3 py-3 px-4 rounded-lg transition-all duration-200",
                       isActive
                         ? "bg-primary/10 text-primary font-medium"
-                        : "hover:bg-muted hover:translate-x-1",
-                      item.title === "Logout" && "text-red-500 hover:bg-red-50"
+                        : "hover:bg-muted hover:translate-x-1"
                     )}
                   >
                     <item.icon
@@ -191,41 +221,6 @@ export function AppSidebar({ ...props }) {
           })}
         </SidebarMenu>
       </SidebarContent>
-
-      {/* Sidebar Footer */}
-      <SidebarFooter className="border-t p-5">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden">
-            {/* Use inline SVG directly instead of trying to load an external image */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-slate-400"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
-          <div className="flex-1">
-            <p className="font-medium text-sm text-slate-800">
-              {data.user?.name || "Admin User"}
-            </p>
-            <p className="text-xs text-slate-500">
-              {data.user?.email || "admin@example.com"}
-            </p>
-          </div>
-          <SidebarTrigger className="ml-auto hover:bg-slate-100 rounded-full p-1.5 transition-colors">
-            <IconSettings className="w-4 h-4 text-slate-500" />
-          </SidebarTrigger>
-        </div>
-      </SidebarFooter>
     </Sidebar>
   );
 }

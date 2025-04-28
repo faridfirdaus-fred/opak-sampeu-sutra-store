@@ -6,7 +6,8 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
+import { AiOutlineShoppingCart } from "react-icons/ai"; // Import ikon keranjang
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -19,7 +20,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky py-2 top-0 z-50 w-full px-20 mx-auto border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky rounded-b-4xl py-2 top-0 z-50 w-full px-20 mx-auto border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -33,7 +34,7 @@ export default function Navbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-sm hover:text-primer font-medium transition-colors"
+                  className="text-md hover:text-primer font-medium transition-colors duration-200"
                 >
                   {link.label}
                 </Link>
@@ -42,8 +43,14 @@ export default function Navbar() {
           </ul>
         </div>
 
-        {/* Login/Avatar */}
-        <div className="relative">
+        {/* Keranjang dan Login/Avatar */}
+        <div className="relative flex items-center gap-4">
+          {/* Icon Keranjang */}
+          <Link href="/cart" className="relative">
+            <AiOutlineShoppingCart className="text-2xl text-gray-600 hover:text-primer transition-colors duration-200 cursor-pointer" />
+          </Link>
+
+          {/* Login/Avatar */}
           {session ? (
             <div>
               <Avatar

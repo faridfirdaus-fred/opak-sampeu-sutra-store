@@ -7,6 +7,14 @@ import { usePathname } from "next/navigation";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import Chatbot from "@/components/Chatbot";
+import { Roboto } from "next/font/google";
+import { CartProvider } from "@/context/CartContext";
+
+// Import Roboto font
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"], // Tambahkan berat font yang diperlukan
+});
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -15,10 +23,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <SessionProvider>
-      <html lang="en">
+      <html lang="en" className={roboto.className}>
         <body>
           {!isAdminRoute && <Navbar />}
-          {children}
+           <CartProvider>{children}</CartProvider>
           {!isAdminRoute && <Chatbot />}
           {!isAdminRoute && <Footer />}
         </body>
