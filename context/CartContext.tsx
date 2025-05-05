@@ -48,7 +48,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       // Gabungkan item yang memiliki productId yang sama
       const mergedItems: { [key: string]: CartItem } = {};
 
-      data.forEach((item: any) => {
+      data.forEach((item: { id: string; productId: string; quantity: number; product: { name: string; price: number; imageUrl: string } }) => {
         const productId = item.productId;
         if (mergedItems[productId]) {
           // Jika produk sudah ada, tambahkan quantity

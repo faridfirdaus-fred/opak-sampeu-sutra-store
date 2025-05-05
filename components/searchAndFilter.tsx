@@ -23,7 +23,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
   onFilter,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Semua");
+  const setSelectedCategory = useState("Semua")[1];
 
   const handleSearch = () => {
     onSearch(searchQuery);

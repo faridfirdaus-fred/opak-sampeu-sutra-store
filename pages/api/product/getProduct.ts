@@ -7,11 +7,21 @@ export default async function handler(
 ): Promise<void> {
   if (req.method === "GET") {
     try {
+      // Test database connection first
+      await prisma.$connect();
+
       const products = await prisma.product.findMany();
-      res.status(200).json(products);
+
+      // Always return an array (even if empty)
+      res.status(200).json(products || []);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to fetch products" });
+      console.error("Database error:", error);
+
+      // Send a more descriptive error response
+      res.status(500).json({
+        error: "Database connection error",
+        message: "Could not fetch products. Please try again later.",
+      });
     }
   } else {
     res.setHeader("Allow", ["GET"]);

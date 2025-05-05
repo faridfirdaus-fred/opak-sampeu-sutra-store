@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/context/CartContext";
-import Notification from "@/components/Notification"; // Import Notification
+import Notification from "@/components/Notification";
 
 interface ProductCardProps {
   id: string;
@@ -17,6 +17,8 @@ interface ProductCardProps {
   imageUrl: string;
   stock: number;
   price: number;
+  onAddToCart?: () => void; // Make it optional
+  onCheckout?: () => void; // Make it optional
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -25,6 +27,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   imageUrl,
   stock,
   price,
+  onAddToCart,
+  onCheckout,
 }) => {
   const router = useRouter();
   const { addToCart } = useCart();
@@ -34,44 +38,61 @@ const ProductCard: React.FC<ProductCardProps> = ({
     router.push(`/shop/${id}`);
   };
 
-const handleAddToCart = async () => {
-  try {
-    // Tambahkan ke local cart
-    addToCart({
-      id,
-      productId: id,
-      name,
-      price,
-      quantity: 1,
-      imageUrl,
-    });
-
-    // Kirim ke server dengan container yang valid
-    const response = await fetch("/api/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productId: id,
-        quantity: 1,
-        container: "TOPLES", // Gunakan nilai enum yang valid
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Failed to add item to cart:", errorData);
-      throw new Error("Gagal tambah ke keranjang server");
+  const handleAddToCart = async () => {
+    // If an external onAddToCart function is provided, use it
+    if (onAddToCart) {
+      onAddToCart();
+      return;
     }
 
-    setNotification("Produk berhasil ditambahkan ke keranjang!");
-    setTimeout(() => setNotification(null), 3000);
-  } catch (error) {
-    console.error(error);
-    setNotification("Gagal menambahkan produk ke keranjang!");
-    setTimeout(() => setNotification(null), 3000);
-  }
-};
+    // Otherwise use the internal implementation
+    try {
+      // Tambahkan ke local cart
+      addToCart({
+        id,
+        productId: id,
+        name,
+        price,
+        quantity: 1,
+        imageUrl,
+      });
 
+      // Kirim ke server dengan container yang valid
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: id,
+          quantity: 1,
+          container: "TOPLES", // Gunakan nilai enum yang valid
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Failed to add item to cart:", errorData);
+        throw new Error("Gagal tambah ke keranjang server");
+      }
+
+      setNotification("Produk berhasil ditambahkan ke keranjang!");
+      setTimeout(() => setNotification(null), 3000);
+    } catch (error) {
+      console.error(error);
+      setNotification("Gagal menambahkan produk ke keranjang!");
+      setTimeout(() => setNotification(null), 3000);
+    }
+  };
+
+  const handleBuyNow = () => {
+    // If an external onCheckout function is provided, use it
+    if (onCheckout) {
+      onCheckout();
+      return;
+    }
+
+    // Otherwise navigate to the product page
+    router.push(`/shop/${id}`);
+  };
 
   return (
     <>
@@ -122,7 +143,7 @@ const handleAddToCart = async () => {
           </CardContent>
           <CardFooter className="px-6 pt-0 flex gap-2">
             <Button
-              onClick={() => router.push(`/shop/${id}`)}
+              onClick={handleBuyNow}
               disabled={stock <= 0}
               className="flex-1 bg-primer hover:bg-white hover:text-primer text-white rounded-lg shadow-sm transition-all duration-200"
             >

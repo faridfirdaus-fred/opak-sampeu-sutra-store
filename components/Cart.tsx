@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { PlusIcon, MinusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation"; // Add this import
 
 interface CartItem {
   id: string;
@@ -20,7 +21,7 @@ interface CartProps {
   items: CartItem[];
   onRemove: (id: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
-  onCheckout: (selectedItems: CartItem[]) => void;
+  onCheckout?: (selectedItems: CartItem[]) => void; // Make this optional
 }
 
 export default function Cart({
@@ -29,6 +30,7 @@ export default function Cart({
   onUpdateQuantity,
   onCheckout,
 }: CartProps) {
+  const router = useRouter(); // Add router
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [loadingItems, setLoadingItems] = useState<{ [key: string]: boolean }>(
@@ -97,7 +99,23 @@ export default function Cart({
   const selectedTotal = items
     .filter((item) => selectedItems.includes(item.id))
     .reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Handle checkout navigation
+  const handleCheckout = () => {
+    const selectedProducts = items.filter((item) =>
+      selectedItems.includes(item.id)
+    );
 
+    // If using onCheckout prop (for compatibility with existing code)
+    if (onCheckout) {
+      onCheckout(selectedProducts);
+    }
+
+    // Store selected items in localStorage
+    localStorage.setItem("checkoutItems", JSON.stringify(selectedProducts));
+
+    // Navigate to checkout page
+    router.push("/checkout");
+  };
   return (
     <div className="p-4 border rounded-md shadow-md bg-white">
       <h2 className="text-xl font-bold mb-4">Keranjang</h2>
@@ -192,11 +210,7 @@ export default function Cart({
               {selectedTotal.toLocaleString()}
             </p>
             <Button
-              onClick={() =>
-                onCheckout(
-                  items.filter((item) => selectedItems.includes(item.id))
-                )
-              }
+              onClick={handleCheckout}
               className="bg-blue-500 text-white hover:bg-blue-600 mt-4 w-full"
               disabled={selectedItems.length === 0}
             >

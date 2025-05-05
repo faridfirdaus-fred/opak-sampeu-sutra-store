@@ -3,11 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Add this import
 import { FaInfoCircle } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import ProductCard from "@/components/ProductCard"; // Import the ProductCard from the first code snippet
+import ProductCard from "@/components/ProductCard";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { useCart } from "@/context/CartContext"; // Import cart context
+import Notification from "@/components/Notification"; // Import notification component
 
 interface Product {
   id: string;
@@ -31,6 +34,9 @@ const containerVariants = {
 const HighlightedProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState<string | null>(null);
+  const { addToCart } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchHighlightedProducts() {
@@ -44,7 +50,7 @@ const HighlightedProducts = () => {
         }
 
         const data = await response.json();
-        console.log("Fetched Highlighted Products:", data); // Log data for debugging
+        console.log("Fetched Highlighted Products:", data);
         setProducts(data);
       } catch (error) {
         console.error("Failed to fetch highlighted products:", error);
@@ -56,8 +62,70 @@ const HighlightedProducts = () => {
     fetchHighlightedProducts();
   }, []);
 
+  // Handle adding product to cart
+  const handleAddToCart = async (product: Product) => {
+    try {
+      // Add to local cart
+      addToCart({
+        id: product.id,
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        imageUrl: product.image,
+      });
+
+      // Send to server
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product.id,
+          quantity: 1,
+          container: "TOPLES", // Using valid enum value
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Failed to add item to cart:", errorData);
+        throw new Error("Gagal tambah ke keranjang server");
+      }
+
+      setNotification("Produk berhasil ditambahkan ke keranjang!");
+      setTimeout(() => setNotification(null), 3000);
+    } catch (error) {
+      console.error(error);
+      setNotification("Gagal menambahkan produk ke keranjang!");
+      setTimeout(() => setNotification(null), 3000);
+    }
+  };
+
+  // Handle direct checkout
+  const handleCheckout = (product: Product) => {
+    // Create checkout item
+    const checkoutItem = [
+      {
+        id: product.id,
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        imageUrl: product.image,
+      },
+    ];
+
+    // Store in localStorage
+    localStorage.setItem("checkoutItems", JSON.stringify(checkoutItem));
+
+    // Redirect to checkout page
+    router.push("/checkout");
+  };
+
   return (
-    <section className=" py-12 px-4 md:px-20">
+    <section className="py-12 px-4 md:px-20">
+      {notification && <Notification message={notification} type="success" />}
+
       <div className="container mx-auto">
         <div className="flex justify-between items-center mb-8">
           <motion.h2
@@ -105,12 +173,8 @@ const HighlightedProducts = () => {
                 imageUrl={product.image}
                 stock={product.stock}
                 price={product.price}
-                onCheckout={() => {
-                  // Handle checkout logic here
-                }}
-                onAddToCart={() => {
-                  // Handle add to cart logic here
-                }}
+                onCheckout={() => handleCheckout(product)}
+                onAddToCart={() => handleAddToCart(product)}
               />
             ))}
           </motion.div>

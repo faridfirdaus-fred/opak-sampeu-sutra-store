@@ -80,7 +80,7 @@ export default async function handler(
                 userId,
                 productId,
                 quantity,
-                container: container as any,
+                container: container as keyof typeof Container,
               },
             });
             res.status(201).json(newCartItem);

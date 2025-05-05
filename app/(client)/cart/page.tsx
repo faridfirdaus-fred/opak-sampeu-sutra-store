@@ -33,7 +33,12 @@ export default function CartPage() {
     );
   }
 
-  const handleCheckout = (selectedItems) => {
+  interface SelectedItem {
+    id: string;
+    quantity: number;
+  }
+
+  const handleCheckout = (selectedItems: SelectedItem[]): void => {
     // Implementasi checkout untuk item yang dipilih
     console.log("Selected items for checkout:", selectedItems);
 

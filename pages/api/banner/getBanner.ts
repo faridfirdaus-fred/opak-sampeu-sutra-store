@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma"; // Import the singleton instead of creating a new client
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,7 +13,9 @@ export default async function handler(
   }
 
   try {
-    // Ambil semua banner dari database
+    // Remove explicit connect - the singleton handles this
+
+    // Fetch banners directly with Prisma
     const banners = await prisma.banner.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -23,8 +23,19 @@ export default async function handler(
     res.status(200).json(banners);
   } catch (error) {
     console.error("Error fetching banners:", error);
-    res.status(500).json({ message: "Gagal mengambil banner", error });
-  } finally {
-    await prisma.$disconnect();
+
+    // Return empty array instead of mock data
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        "Database error in development - returning empty banner list"
+      );
+      return res.status(200).json([]);
+    }
+
+    res.status(500).json({
+      message: "Failed to fetch banners",
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
+  // Remove the finally block with disconnect - singleton handles this
 }
