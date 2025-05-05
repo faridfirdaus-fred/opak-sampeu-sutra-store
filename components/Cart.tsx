@@ -117,7 +117,7 @@ export default function Cart({
     router.push("/checkout");
   };
   return (
-    <div className="p-4 border rounded-md shadow-md bg-white">
+    <div className="p-4 mb-40 border rounded-md shadow-md bg-white">
       <h2 className="text-xl font-bold mb-4">Keranjang</h2>
       {items.length === 0 ? (
         <p className="text-gray-500">Keranjang Anda kosong.</p>
