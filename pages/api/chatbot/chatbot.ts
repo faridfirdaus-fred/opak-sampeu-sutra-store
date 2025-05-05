@@ -65,8 +65,12 @@ export default async function chatbotHandler(
     const reply = response.choices[0]?.message?.content?.trim() || null;
 
     return res.status(200).json({ reply });
-  } catch (error: any) {
-    console.error("Error handling chatbot request:", error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error handling chatbot request:", error.message);
+    } else {
+      console.error("Error handling chatbot request:", error);
+    }
     return res.status(500).json({ error: "Internal server error" });
   }
 }

@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   IconCamera,
   IconDashboard,
-  IconSettings,
   IconBox,
   IconLogout,
 } from "@tabler/icons-react";
@@ -13,12 +12,10 @@ import {
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { motion } from "framer-motion";
 import Link from "next/link";

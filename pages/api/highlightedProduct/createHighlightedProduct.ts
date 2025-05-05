@@ -60,7 +60,7 @@ export default async function handler(
     console.error("Error creating highlighted product:", error);
     return res.status(500).json({
       message: "Failed to create highlighted product",
-      error: error.message,
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   } finally {
     await prisma.$disconnect();

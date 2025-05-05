@@ -30,12 +30,19 @@ interface BannerTableProps {
   banners: Banner[];
   currentPage: number;
   totalPages: number;
+  isLoading: boolean;
   rowsPerPage: number;
   totalBanners: number;
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (value: number) => void;
   onEdit: (banner: Banner) => void;
   onDelete: (id: string) => void;
+  error?: string | null; // Tambahkan jika diperlukan
+  sortConfig?: {
+    key: keyof Banner;
+    direction: "ascending" | "descending";
+  };
+  requestSort?: (key: keyof Banner) => void;
 }
 
 export default function BannerTable({

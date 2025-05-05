@@ -89,10 +89,19 @@ export default function BannerPage() {
           ? "descending"
           : "ascending",
     }));
+
+    const sortedBanners = [...banners].sort((a, b) => {
+      if (a[key] < b[key]) return sortConfig.direction === "ascending" ? -1 : 1;
+      if (a[key] > b[key]) return sortConfig.direction === "ascending" ? 1 : -1;
+      return 0;
+    });
+
+    setBanners(sortedBanners);
   };
 
   // Pagination
   const handlePageChange = (page: number) => {
+    if (page < 1 || page > Math.ceil(banners.length / rowsPerPage)) return;
     setCurrentPage(page);
   };
 
@@ -107,27 +116,34 @@ export default function BannerPage() {
     imageUrl: string;
   }) => {
     try {
-      if (selectedBanner) {
-        const res = await fetch(`/api/banner/editBanner`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: selectedBanner.id, ...formData }),
-        });
-        if (!res.ok) throw new Error("Failed to update banner");
-        toast.success("Banner updated successfully");
-      } else {
-        const res = await fetch(`/api/banner/createBanner`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-        if (!res.ok) throw new Error("Failed to create banner");
-        toast.success("Banner created successfully");
-      }
+      const endpoint = selectedBanner
+        ? `/api/banner/editBanner`
+        : `/api/banner/createBanner`;
+      const method = selectedBanner ? "PUT" : "POST";
 
-      const res = await fetch("/api/banner/getBanner");
-      const data = await res.json();
-      setBanners(data);
+      const res = await fetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          selectedBanner ? { id: selectedBanner.id, ...formData } : formData
+        ),
+      });
+
+      if (!res.ok)
+        throw new Error(
+          selectedBanner ? "Failed to update banner" : "Failed to create banner"
+        );
+
+      toast.success(
+        selectedBanner
+          ? "Banner updated successfully"
+          : "Banner created successfully"
+      );
+
+      const updatedBanners = await fetch("/api/banner/getBanner").then((res) =>
+        res.json()
+      );
+      setBanners(updatedBanners);
       setIsFormOpen(false);
       setSelectedBanner(null);
     } catch (err) {
@@ -146,9 +162,10 @@ export default function BannerPage() {
           method: "DELETE",
         }
       );
-      if (!res.ok) throw new Error("Failed to delete banner");
-      toast.success("Banner deleted successfully");
 
+      if (!res.ok) throw new Error("Failed to delete banner");
+
+      toast.success("Banner deleted successfully");
       setBanners((prev) => prev.filter((b) => b.id !== bannerToDelete.id));
       setIsDeleteDialogOpen(false);
       setBannerToDelete(null);
@@ -167,11 +184,35 @@ export default function BannerPage() {
         className="flex flex-col h-full space-y-4"
       >
         {/* Page Header */}
-        <motion.div variants={item} className="px-6 py-4">
-          <h1 className="text-2xl font-bold tracking-tight">Banners</h1>
-          <p className="text-sm text-muted-foreground">
-            Kelola banner yang ditampilkan di halaman utama
-          </p>
+        <motion.div variants={item} className="w-full px-6">
+          {banners.length === 0 && !isLoading ? (
+            <div className="text-center text-gray-500">
+              No banners available.
+            </div>
+          ) : (
+            <BannerTable
+              banners={banners}
+              isLoading={isLoading}
+              error={error}
+              sortConfig={sortConfig}
+              requestSort={handleSort}
+              currentPage={currentPage}
+              totalPages={Math.ceil(banners.length / rowsPerPage)}
+              rowsPerPage={rowsPerPage}
+              totalBanners={banners.length}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+              onEdit={(banner) => {
+                setSelectedBanner(banner);
+                setIsFormOpen(true);
+              }}
+              onDelete={(id) => {
+                const banner = banners.find((b) => b.id === id);
+                setBannerToDelete(banner || null);
+                setIsDeleteDialogOpen(true);
+              }}
+            />
+          )}
         </motion.div>
 
         {/* Filter & Actions Bar */}
@@ -205,7 +246,7 @@ export default function BannerPage() {
 
             <Button
               onClick={() => {
-                setIsFormOpen(true); // Membuka form
+                setIsFormOpen(true);
               }}
               className="gap-1"
               size="sm"
@@ -215,39 +256,20 @@ export default function BannerPage() {
           </div>
         </motion.div>
 
-        {/* Banner Table */}
-        <motion.div variants={item} className="w-full px-6">
-          <BannerTable
-            banners={banners}
-            isLoading={isLoading}
-            error={error}
-            sortConfig={sortConfig}
-            requestSort={handleSort}
-            currentPage={currentPage}
-            totalPages={Math.ceil(banners.length / rowsPerPage)}
-            totalBanners={banners.length}
-            rowsPerPage={rowsPerPage}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            onEdit={(banner) => {
-              setSelectedBanner(banner);
-              setIsFormOpen(true);
-            }}
-            onDelete={(id) => {
-              const banner = banners.find((b) => b.id === id);
-              setBannerToDelete(banner || null);
-              setIsDeleteDialogOpen(true);
-            }}
-          />
-        </motion.div>
-
         {/* Banner Form Modal */}
         {isFormOpen && (
           <BannerForm
             isOpen={isFormOpen}
-            onClose={() => setIsFormOpen(false)} // Menutup form
+            onClose={() => setIsFormOpen(false)}
             onSubmit={(formData) => handleSaveBanner(formData)}
-            initialData={null}
+            initialData={
+              selectedBanner
+                ? {
+                    title: selectedBanner.title,
+                    imageUrl: selectedBanner.imageUrl,
+                  }
+                : undefined
+            }
           />
         )}
 

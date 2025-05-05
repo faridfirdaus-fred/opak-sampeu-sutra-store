@@ -19,8 +19,6 @@ import {
   ChevronRight,
   ChevronDown,
   ArrowDownRight,
-  Star,
-  StarOff,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -84,7 +82,7 @@ export default function ProductTable({
   onDelete,
   onToggleHighlight, // Add new prop
 }: ProductTableProps) {
-  const { collapsed } = useSidebar();
+  useSidebar();
   // Add state for delete confirmation
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import Checkout from "@/components/Checkout";
+import CheckoutPage from "@/components/Checkout";
 
 interface DetailProductProps {
   id: string;
@@ -27,8 +27,6 @@ export default function DetailProduct({
     <div className="flex mb-20 mt-10 flex-col md:flex-row gap-8 px-20 py-6 bg-white rounded-lg shadow-md">
       {/* Product Image */}
       <div className="flex-1 max-w-md py-10 mx-auto md:mx-0">
-        {" "}
-        {/* Batasi lebar gambar */}
         <Image
           src={imageUrl}
           alt={name}
@@ -56,13 +54,17 @@ export default function DetailProduct({
         </Badge>
 
         {/* Checkout Component */}
-        <Checkout
-          productId={id}
-          stock={stock}
-          price={price}
-          name={name}
-          imageUrl={imageUrl} // Teruskan imageUrl
-        />
+        {stock > 0 ? (
+          <CheckoutPage
+            productId={id}
+            stock={stock}
+            price={price}
+            name={name}
+            imageUrl={imageUrl}
+          />
+        ) : (
+          <p className="text-red-500 font-semibold">Produk ini sedang habis.</p>
+        )}
       </div>
     </div>
   );

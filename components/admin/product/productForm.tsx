@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "@/validations/ProductSchema";
+import { z } from "zod";
 import { motion } from "framer-motion";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
@@ -40,8 +41,16 @@ import { cn } from "@/lib/utils";
 interface ProductFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (formData: any) => void;
-  product?: any;
+  onSave: (formData: z.infer<typeof productSchema>) => void;
+  product?: {
+    name?: string;
+    description?: string;
+    price?: number | string;
+    stock?: number | string;
+    category?: string;
+    container?: string;
+    imageUrl?: string;
+  };
 }
 
 export default function ProductForm({
@@ -64,7 +73,7 @@ export default function ProductForm({
       description: "",
       price: 0,
       stock: 0,
-      category: "OPAK",
+      category: "OPAK" as "OPAK" | "BASTIK" | "KACANG",
       container: "TOPLES",
       imageUrl: "",
     },
@@ -87,8 +96,8 @@ export default function ProductForm({
             typeof product.stock === "string"
               ? parseInt(product.stock)
               : product.stock || 0,
-          category: product.category || "OPAK",
-          container: product.container || "TOPLES",
+          category: (["OPAK", "BASTIK", "KACANG"].includes(product.category || "") ? product.category : "OPAK") as "OPAK" | "BASTIK" | "KACANG",
+          container: (["TOPLES", "BOX"].includes(product.container || "") ? product.container : "TOPLES") as "TOPLES" | "BOX",
           imageUrl: product.imageUrl || "",
         });
         setImagePreview(product.imageUrl || null);
@@ -157,7 +166,7 @@ const onDrop = async (acceptedFiles: File[]) => {
     maxFiles: 1,
   });
 
-  const onSubmit = (formData: any) => {
+  const onSubmit = (formData: z.infer<typeof productSchema>) => {
     onSave(formData);
   };
 
@@ -272,7 +281,7 @@ const onDrop = async (acceptedFiles: File[]) => {
                   </Label>
                   <Select
                     value={watch("category")}
-                    onValueChange={(value) => setValue("category", value)}
+                    onValueChange={(value) => setValue("category", value as "OPAK" | "BASTIK" | "KACANG")}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih kategori" />
@@ -302,7 +311,7 @@ const onDrop = async (acceptedFiles: File[]) => {
                   </Label>
                   <Select
                     value={watch("container")}
-                    onValueChange={(value) => setValue("container", value)}
+                    onValueChange={(value) => setValue("container", value as "TOPLES" | "BOX")}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih container" />

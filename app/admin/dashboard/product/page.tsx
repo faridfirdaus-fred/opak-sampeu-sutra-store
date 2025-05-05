@@ -3,14 +3,13 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Plus, Search, ArrowDownUp, Star } from "lucide-react";
+import { Plus,  ArrowDownUp, Star } from "lucide-react";
 
 import ProductTable from "@/components/admin/product/productTable";
 import ProductForm from "@/components/admin/product/productForm";
 import SearchAndFilter from "@/components/admin/product/searchAndFilter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -173,7 +172,7 @@ export default function ProductPage() {
   };
 
   // CRUD operations
-  const handleSaveProduct = async (formData: any) => {
+  const handleSaveProduct = async (formData: { name: string; price: number; stock: number; category: "OPAK" | "BASTIK" | "KACANG"; container: "TOPLES" | "BOX"; description?: string; imageUrl?: string }) => {
     try {
       if (selectedProduct) {
         // Update existing product
@@ -183,8 +182,8 @@ export default function ProductPage() {
           body: JSON.stringify({
             id: selectedProduct.id,
             ...formData,
-            price: parseFloat(formData.price),
-            stock: parseInt(formData.stock, 10),
+            price: formData.price,
+            stock: parseInt(formData.stock.toString(), 10),
           }),
         });
 
@@ -197,8 +196,8 @@ export default function ProductPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...formData,
-            price: parseFloat(formData.price),
-            stock: parseInt(formData.stock, 10),
+            price: formData.price,
+            stock: parseInt(formData.stock.toString(), 10),
           }),
         });
 
@@ -407,7 +406,7 @@ export default function ProductPage() {
           <div className="flex items-center gap-2">
             <Select
               value={sortConfig.key}
-              onValueChange={(value) => requestSort(value as any)}
+              onValueChange={(value: "name" | "price" | "stock" | "category") => requestSort(value)}
             >
               <SelectTrigger className="w-[130px] h-9 bg-muted/50 border-0">
                 <div className="flex items-center gap-2">
@@ -468,7 +467,7 @@ export default function ProductPage() {
             setSelectedProduct(null);
           }}
           onSave={handleSaveProduct}
-          product={selectedProduct}
+          product={selectedProduct || undefined}
         />
       </motion.div>
     </div>
