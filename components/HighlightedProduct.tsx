@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Add this import
 import { FaInfoCircle } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import ProductCard from "@/components/ProductCard";
+import Notification from "./Notification";
+import { Button } from "./ui/button";
+import ProductCard from "./ProductCard";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import { useCart } from "@/context/CartContext"; // Import cart context
-import Notification from "@/components/Notification"; // Import notification component
+import { Skeleton } from "./ui/skeleton";
+import { useCart } from "../context/CartContext";
 
 interface Product {
   id: string;

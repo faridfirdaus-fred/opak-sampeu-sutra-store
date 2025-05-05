@@ -1,14 +1,14 @@
 "use client";
 
 import { ReactNode } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { usePathname } from "next/navigation";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import Chatbot from "@/components/Chatbot";
 import { Roboto } from "next/font/google";
-import { CartProvider } from "@/context/CartContext";
+import Navbar from "../components/Navbar";
+import { CartProvider } from "../context/CartContext";
+import Chatbot from "../components/Chatbot";
+import Footer from "../components/Footer";
 
 // Import Roboto font
 const roboto = Roboto({

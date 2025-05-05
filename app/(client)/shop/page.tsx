@@ -1,8 +1,8 @@
 "use client";
 
-import ProductCard from "@/components/ProductCard";
-import SearchAndFilter from "@/components/searchAndFilter";
 import { useEffect, useState } from "react";
+import SearchAndFilter from "../../../components/searchAndFilter";
+import ProductCard from "../../../components/ProductCard";
 
 interface Product {
   id: string;

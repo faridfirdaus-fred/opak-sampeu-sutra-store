@@ -1,15 +1,10 @@
 "use client";
 
 import { IconCirclePlusFilled, IconMail } from "@tabler/icons-react";
+import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+import { Button } from "./ui/button";
 
-import { Button } from "@/components/ui/button";
-import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+
 
 interface NavMainProps {
   items: { title: string; url: string; icon?: React.ComponentType }[];

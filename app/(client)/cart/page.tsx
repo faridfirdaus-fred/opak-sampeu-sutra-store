@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Cart from "@/components/Cart";
-import { useCart } from "@/context/CartContext";
-import Notification from "@/components/Notification";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useCart } from "../../../context/CartContext";
+import Cart from "../../../components/Cart";
+import Notification from "../../../components/Notification";
 
 export default function CartPage() {
   const { data: session } = useSession();

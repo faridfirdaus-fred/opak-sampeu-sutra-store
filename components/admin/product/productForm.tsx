@@ -3,30 +3,12 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { productSchema } from "@/validations/ProductSchema";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
+ 
 import {
   XCircle,
   Tag,
@@ -36,7 +18,14 @@ import {
   Package,
   Image,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { productSchema } from "../../../validations/ProductSchema";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
+import { Label } from "../../ui/label";
+import { Input } from "../../ui/input";
+import { cn } from "../../../lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
+import { Textarea } from "../../ui/textarea";
+import { Button } from "../../ui/button";
 
 interface ProductFormProps {
   isOpen: boolean;

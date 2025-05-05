@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { PlusIcon, MinusIcon } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface CartItem {
   id: string;
@@ -30,7 +30,7 @@ interface CustomerInfo {
   notes: string;
 }
 
-export default function CheckoutPage({
+export default function Checkout({
   productId,
   stock,
   price,

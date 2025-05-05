@@ -1,2 +1,7 @@
 # Ignore Prisma generated files
 lib/generated/**/*
+node_modules
+.next
+lib/generated
+prisma/client
+.prisma

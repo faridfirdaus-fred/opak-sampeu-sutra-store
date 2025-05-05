@@ -4,20 +4,13 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Plus,  ArrowDownUp, Star } from "lucide-react";
-
-import ProductTable from "@/components/admin/product/productTable";
-import ProductForm from "@/components/admin/product/productForm";
-import SearchAndFilter from "@/components/admin/product/searchAndFilter";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
+import SearchAndFilter from "../../../../components/admin/product/searchAndFilter";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
+import { Button } from "../../../../components/ui/button";
+import { Card, CardContent } from "../../../../components/ui/card";
+import ProductTable from "../../../../components/admin/product/productTable";
+import ProductForm from "../../../../components/admin/product/productForm";
 
 // Updated Product interface with highlighted information
 interface Product {

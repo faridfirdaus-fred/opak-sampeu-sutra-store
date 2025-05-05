@@ -1,15 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button"; // ShadCN UI Button
-import { Input } from "@/components/ui/input"; // ShadCN UI Input
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"; // ShadCN UI Select
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+ // ShadCN UI Select
 
 interface SearchAndFilterProps {
   categories: string[];

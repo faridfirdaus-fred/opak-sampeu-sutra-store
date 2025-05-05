@@ -4,19 +4,13 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Plus, Search, ArrowDownUp } from "lucide-react";
+import BannerTable from "../../../../components/admin/banner/bannerTable";
+import { Input } from "../../../../components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
+import { Button } from "../../../../components/ui/button";
+import BannerForm from "../../../../components/admin/banner/bannerForm";
+import DeleteConfirmation from "../../../../components/admin/banner/deleteConfirmation";
 
-import BannerForm from "@/components/admin/banner/bannerForm";
-import BannerTable from "@/components/admin/banner/bannerTable";
-import DeleteConfirmation from "@/components/admin/banner/deleteConfirmation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface Banner {
   id: string;

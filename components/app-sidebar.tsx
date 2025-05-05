@@ -9,19 +9,12 @@ import {
   IconLogout,
 } from "@tabler/icons-react";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+ // Replace with the actual library name
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import router
-import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 const DEFAULT_AVATAR_BASE64 =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM2NjYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMCAyMXYtMmE0IDQgMCAwIDAtNC00SDhhNCA0IDAgMCAwLTQgNHYyIj48L3BhdGg+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ij48L2NpcmNsZT48L3N2Zz4=";
 
@@ -127,6 +120,10 @@ export function AppSidebar({ ...props }) {
               (item.url !== "/admin/dashboard" &&
                 (pathname ?? "").startsWith(item.url));
 
+            function cn(...classes: (string | undefined | null | false)[]): string {
+              return classes.filter(Boolean).join(" ");
+            }
+
             return (
               <SidebarMenuItem key={index} className="my-1.5">
                 <SidebarMenuButton asChild>
@@ -186,6 +183,10 @@ export function AppSidebar({ ...props }) {
             }
 
             const isActive = pathname === item.url;
+
+            function cn(...classes: (string | undefined | null | false)[]): string {
+              return classes.filter(Boolean).join(" ");
+            }
 
             return (
               <SidebarMenuItem key={index} className="my-1.5">

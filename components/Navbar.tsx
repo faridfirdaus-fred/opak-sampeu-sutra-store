@@ -3,11 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai"; // Import ikon keranjang
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
 
 export default function Navbar() {
   const { data: session } = useSession();

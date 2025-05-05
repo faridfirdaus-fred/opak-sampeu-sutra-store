@@ -1,5 +1,5 @@
+import {  PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/lib/prisma"; // Import the singleton instead of creating a new client
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,7 +15,8 @@ export default async function handler(
   try {
     // Remove explicit connect - the singleton handles this
 
-    // Fetch banners directly with Prisma
+    // Fetch banners using an instance of Prisma Client
+    const prisma = new PrismaClient();
     const banners = await prisma.banner.findMany({
       orderBy: { createdAt: "desc" },
     });

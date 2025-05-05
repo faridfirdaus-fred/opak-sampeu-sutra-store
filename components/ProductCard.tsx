@@ -3,13 +3,15 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+
 import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
-import { useCart } from "@/context/CartContext";
-import Notification from "@/components/Notification";
+import { useCart } from "../context/CartContext";
+import Notification from "./Notification";
+import { Card, CardContent, CardFooter, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+
 
 interface ProductCardProps {
   id: string;

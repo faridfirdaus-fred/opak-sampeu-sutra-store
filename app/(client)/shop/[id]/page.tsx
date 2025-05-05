@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import DetailProduct from "@/components/DetailProduct";
+import DetailProduct from "../../../../components/DetailProduct";
 
 interface Product {
   id: string;

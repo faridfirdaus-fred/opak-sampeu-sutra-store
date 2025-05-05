@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Toaster } from "@/components/ui/sonner";
+import { SidebarInset, SidebarProvider } from "../../components/ui/sidebar";
+import { AppSidebar } from "../../components/app-sidebar";
+import { SiteHeader } from "../../components/site-header";
+import { Toaster } from "../../components/ui/sonner";
+
 
 export default function AdminLayout({
   children,

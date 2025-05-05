@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+
 import {
   Pencil,
   Trash2,
@@ -21,16 +13,14 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useSidebar } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+
 import { useState } from "react"; // Add this import
 import DeleteConfirmation from "./deleteConfirmation"; // Add this import
-import { Switch } from "@/components/ui/switch";
+import { useSidebar } from "../../ui/sidebar";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table";
+import { Switch } from "../../ui/switch";
+import { Button } from "../../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 
 // Updated Product interface with highlighted properties
 interface Product {

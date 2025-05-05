@@ -1,10 +1,10 @@
 "use client";
 
-import HomeCarousel from "@/components/Carousel";
-import HighlightedProducts from "@/components/HighlightedProduct";
-import ProductFeature from "@/components/ProductFeature";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import HomeCarousel from "../components/Carousel";
+import HighlightedProducts from "../components/HighlightedProduct";
+import ProductFeature from "../components/ProductFeature";
 
 export default function Home() {
   // Gunakan useInView di dalam fungsi komponen

@@ -2,11 +2,11 @@
 
 // Import yang diperlukan di Cart.tsx
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { PlusIcon, MinusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation"; // Add this import
+import { Checkbox } from "./ui/checkbox";
+import { Button } from "./ui/button";
 
 interface CartItem {
   id: string;

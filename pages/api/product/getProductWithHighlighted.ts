@@ -1,6 +1,6 @@
 // pages/api/product/getProductWithHighlighted.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/lib/prisma"; // Import dari singleton
+import { prisma } from "../../../lib/prisma"; // Adjust the import path as necessary
 
 export default async function handler(
   req: NextApiRequest,

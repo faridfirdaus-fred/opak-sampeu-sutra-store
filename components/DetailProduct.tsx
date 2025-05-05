@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import CheckoutPage from "@/components/Checkout";
+import { Badge } from "./ui/badge";
+import CheckoutPage from "./Checkout";
 
 interface DetailProductProps {
   id: string;
