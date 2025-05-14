@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
-
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai"; // Import ikon keranjang
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -13,11 +13,12 @@ import { Button } from "./ui/button";
 export default function Navbar() {
   const { data: session } = useSession();
   const [showLogoutCard, setShowLogoutCard] = useState(false);
+  const pathname = usePathname();
 
   const navLinks = [
     { href: "/", label: "Beranda" },
     { href: "/shop", label: "Produk" },
-    { href: "/about-us", label: "Tentang Kami" },
+    { href: "/about", label: "Tentang Kami" },
   ];
 
   return (
@@ -35,7 +36,11 @@ export default function Navbar() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-md hover:text-primer font-medium transition-colors duration-200"
+                  className={`text-md font-medium transition-colors duration-200 ${
+                    pathname === link.href
+                      ? "text-primer"
+                      : "text-gray-600 hover:text-primer"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -48,7 +53,13 @@ export default function Navbar() {
         <div className="relative flex items-center gap-4">
           {/* Icon Keranjang */}
           <Link href="/cart" className="relative">
-            <AiOutlineShoppingCart className="text-2xl text-gray-600 hover:text-primer transition-colors duration-200 cursor-pointer" />
+            <AiOutlineShoppingCart
+              className={`text-2xl transition-colors duration-200 cursor-pointer ${
+                pathname === "/cart"
+                  ? "text-primer"
+                  : "text-gray-600 hover:text-primer"
+              }`}
+            />
           </Link>
 
           {/* Login/Avatar */}

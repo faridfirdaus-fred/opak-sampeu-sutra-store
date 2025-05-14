@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion"; // Import Framer Motion
+import Image from "next/image";
 import {
   Carousel,
   CarouselContent,
@@ -10,6 +11,7 @@ import {
   CarouselPrevious,
 } from "./ui/carousel";
 import LoadingSpinner from "./Loading";
+import Autoplay from "embla-carousel-autoplay";
 
 export default function HomeCarousel() {
   const [slides, setSlides] = useState<string[]>([]);
@@ -64,6 +66,13 @@ export default function HomeCarousel() {
           align: "center",
           loop: true,
         }}
+        plugins={[
+          Autoplay({
+            delay: 3000,
+            stopOnInteraction: false,
+            stopOnMouseEnter: true,
+          }),
+        ]}
         className="w-full border-1 relative rounded-4xl overflow-hidden shadow-lg"
       >
         <CarouselContent className="-ml-0">
@@ -73,22 +82,25 @@ export default function HomeCarousel() {
               className="pl-0 basis-full h-[500px] flex justify-center items-center"
             >
               <motion.div
-                className="w-full h-full p-0 rounded-lg overflow-hidden"
+                className="w-full h-full p-0 rounded-lg overflow-hidden relative"
                 initial={{ scale: 0.9, opacity: 0 }} // Awal animasi untuk setiap slide
                 animate={{ scale: 1, opacity: 1 }} // Animasi saat muncul
                 transition={{ duration: 0.5, delay: index * 0.2 }} // Delay untuk setiap slide
               >
-                <img
+                <Image
                   src={url}
                   alt={`Slide ${index + 1}`}
-                  className="w-full h-full object-cover"
+                  fill
+                  priority={index === 0}
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                 />
               </motion.div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="absolute left-4 md:left-6 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-md hover:bg-gray-100 z-10" />
-        <CarouselNext className="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-md hover:bg-gray-100 z-10" />
+        <CarouselPrevious className="absolute left-4 md:left-6 top-1/2 transform -translate-y-1/2 bg-white/80  p-3 rounded-full shadow-md hover:bg-gray-100 z-10" />
+        <CarouselNext className="absolute right-4 md:right-6 top-1/2 transform -translate-y-1/2 bg-white/80  p-3 rounded-full shadow-md hover:bg-gray-100 z-10" />
       </Carousel>
     </motion.div>
   );

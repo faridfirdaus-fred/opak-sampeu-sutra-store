@@ -33,10 +33,22 @@ export default async function handler(
       },
     });
 
-    res.status(200).json(updatedBanner);
-  } catch (error) {
+    return res.status(200).json(updatedBanner);
+  } catch (error: any) {
     console.error("Error updating banner:", error);
-    res.status(500).json({ message: "Gagal memperbarui banner", error });
+
+    if (error.code === "P2025") {
+      return res.status(404).json({
+        success: false,
+        message: "Banner tidak ditemukan",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Gagal memperbarui banner",
+      error: error.message || "Unknown error",
+    });
   } finally {
     await prisma.$disconnect();
   }

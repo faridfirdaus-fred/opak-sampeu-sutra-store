@@ -6,11 +6,16 @@ import { motion } from "framer-motion";
 import { Plus, Search, ArrowDownUp } from "lucide-react";
 import BannerTable from "../../../../components/admin/banner/bannerTable";
 import { Input } from "../../../../components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../components/ui/select";
 import { Button } from "../../../../components/ui/button";
 import BannerForm from "../../../../components/admin/banner/bannerForm";
 import DeleteConfirmation from "../../../../components/admin/banner/deleteConfirmation";
-
 
 interface Banner {
   id: string;
@@ -57,21 +62,30 @@ export default function BannerPage() {
   useEffect(() => {
     const fetchBanners = async () => {
       setIsLoading(true);
+      setError(null);
+
       try {
         const res = await fetch("/api/banner/getBanner");
-        if (!res.ok) throw new Error("Failed to fetch banners");
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to fetch banners");
+        }
         const data = await res.json();
         setBanners(data);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error fetching banners:", err);
-        setError("Failed to load banners. Please try again.");
-        toast.error("Failed to load banners. Please try again.");
+        setError(err.message || "Failed to load banners. Please try again.");
+        toast.error(err.message || "Failed to load banners. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchBanners();
+    fetchBanners().catch((err) => {
+      console.error("Unhandled error in fetchBanners:", err);
+      setError("An unexpected error occurred");
+      setIsLoading(false);
+    });
   }, []);
 
   // Sorting
@@ -123,10 +137,11 @@ export default function BannerPage() {
         ),
       });
 
-      if (!res.ok)
-        throw new Error(
-          selectedBanner ? "Failed to update banner" : "Failed to create banner"
-        );
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to save banner");
+      }
 
       toast.success(
         selectedBanner
@@ -134,15 +149,24 @@ export default function BannerPage() {
           : "Banner created successfully"
       );
 
-      const updatedBanners = await fetch("/api/banner/getBanner").then((res) =>
-        res.json()
-      );
-      setBanners(updatedBanners);
+      // Refresh banner list
+      try {
+        const refreshRes = await fetch("/api/banner/getBanner");
+        if (!refreshRes.ok) {
+          throw new Error("Failed to refresh banner list");
+        }
+        const updatedBanners = await refreshRes.json();
+        setBanners(updatedBanners);
+      } catch (refreshError) {
+        console.error("Error refreshing banner list:", refreshError);
+        toast.error("Banner saved but failed to refresh list");
+      }
+
       setIsFormOpen(false);
       setSelectedBanner(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error saving banner:", err);
-      toast.error("Failed to save banner. Please try again.");
+      toast.error(err.message || "Failed to save banner. Please try again.");
     }
   };
 
@@ -157,15 +181,19 @@ export default function BannerPage() {
         }
       );
 
-      if (!res.ok) throw new Error("Failed to delete banner");
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to delete banner");
+      }
 
       toast.success("Banner deleted successfully");
       setBanners((prev) => prev.filter((b) => b.id !== bannerToDelete.id));
       setIsDeleteDialogOpen(false);
       setBannerToDelete(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error deleting banner:", err);
-      toast.error("Failed to delete banner. Please try again.");
+      toast.error(err.message || "Failed to delete banner. Please try again.");
     }
   };
 
