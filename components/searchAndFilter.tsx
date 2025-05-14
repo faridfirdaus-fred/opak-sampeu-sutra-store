@@ -65,7 +65,7 @@ const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
         />
         <Button
           onClick={handleSearch}
-          className="bg-black text-white hover:bg-gray-800"
+          className="bg-primer text-white hover:bg-gray-800"
         >
           Cari
         </Button>
