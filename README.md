@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Opak Sampeu Sutra Store
 
-## Getting Started
+Opak Sampeu Sutra Store adalah platform e-commerce yang menghadirkan opak, makanan ringan khas Indonesia yang terbuat dari singkong, dengan kualitas terbaik. Platform ini dibangun dengan teknologi modern untuk memberikan pengalaman berbelanja yang aman, nyaman, dan efisien.
 
-First, run the development server:
+## 🚀 Fitur Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Katalog Produk**: Menampilkan berbagai varian opak dengan detail lengkap
+- **Manajemen Banner**: Sistem pengelolaan banner promosi yang dinamis
+- **Panel Admin**: Dashboard admin untuk mengelola produk dan konten
+- **Responsive Design**: Tampilan yang optimal di berbagai perangkat
+- **Animasi Modern**: Pengalaman pengguna yang menarik dengan animasi Framer Motion
+
+## 🛠️ Teknologi yang Digunakan
+
+- **Frontend**: Next.js 14, React, TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: MongoDB
+- **ORM**: Prisma
+- **Authentication**: NextAuth.js
+- **Animations**: Framer Motion
+- **UI Components**: Shadcn/ui
+
+## 📋 Prasyarat
+
+- Node.js (versi 18 atau lebih tinggi)
+- MongoDB
+- npm atau yarn
+
+## 🚀 Cara Memulai
+
+1. Clone repository:
+
+   ```bash
+   git clone https://github.com/yourusername/opak-sampeu-sutra-store.git
+   cd opak-sampeu-sutra-store
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   # atau
+   yarn install
+   ```
+
+3. Setup environment variables:
+   Buat file `.env` di root project dan isi dengan variabel berikut:
+
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   NEXTAUTH_SECRET=your_nextauth_secret
+   NEXTAUTH_URL=http://localhost:3000
+   ```
+
+4. Jalankan migrasi database:
+
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. Buat admin user pertama:
+
+   ```bash
+   node createadmin.js
+   ```
+
+6. Jalankan development server:
+
+   ```bash
+   npm run dev
+   # atau
+   yarn dev
+   ```
+
+7. Buka [http://localhost:3000](http://localhost:3000) di browser Anda
+
+## 📁 Struktur Project
+
+```
+opak-sampeu-sutra-store/
+├── app/                    # Next.js app directory
+│   ├── admin/             # Admin dashboard pages
+│   ├── api/               # API routes
+│   └── page.tsx           # Home page
+├── components/            # React components
+│   ├── admin/            # Admin components
+│   └── ui/               # UI components
+├── prisma/               # Database schema and migrations
+├── public/              # Static assets
+└── styles/             # Global styles
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔐 Autentikasi
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Sistem menggunakan NextAuth.js untuk autentikasi dengan fitur:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Login admin
+- Session management
+- Protected routes
 
-## Learn More
+## 🛍️ Fitur E-commerce
 
-To learn more about Next.js, take a look at the following resources:
+- Katalog produk dengan filter dan pencarian
+- Detail produk
+- Manajemen banner promosi
+- Panel admin untuk manajemen konten
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🤝 Kontribusi
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Kontribusi selalu diterima! Untuk berkontribusi:
 
-## Deploy on Vercel
+1. Fork repository
+2. Buat branch fitur (`git checkout -b feature/AmazingFeature`)
+3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
+5. Buat Pull Request
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📝 Lisensi
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Proyek ini dilisensikan di bawah Lisensi MIT - lihat file [LICENSE](LICENSE) untuk detail.
+
+## 📞 Kontak
+
+Alief Falatehan - [@alief_falatehan](https://twitter.com/alief_falatehan)
+
+Link Project: [https://github.com/yourusername/opak-sampeu-sutra-store](https://github.com/yourusername/opak-sampeu-sutra-store)
