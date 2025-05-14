@@ -127,9 +127,7 @@ export default function Chatbot() {
               <div className="text-xs flex items-center">
                 <span className="h-2 w-2 bg-green-400 rounded-full inline-block mr-1"></span>
                 Online{" "}
-                <span className="ml-1 opacity-75">
-                  Respon rata-rata: 30 detik
-                </span>
+               
               </div>
             </div>
           </div>
