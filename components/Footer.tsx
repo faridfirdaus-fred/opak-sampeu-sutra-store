@@ -58,7 +58,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/about-us"
+                  href="/about"
                   className="group flex items-center gap-3 text-gray-200 hover:text-primer transition-colors"
                 >
                   <FaInfoCircle className="text-lg group-hover:text-primer transition-colors" />

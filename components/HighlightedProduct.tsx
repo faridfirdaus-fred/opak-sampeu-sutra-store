@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Add this import
+import { useRouter } from "next/navigation";
 import { FaInfoCircle } from "react-icons/fa";
 import Notification from "./Notification";
 import { Button } from "./ui/button";
@@ -11,6 +11,7 @@ import ProductCard from "./ProductCard";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
 import { useCart } from "../context/CartContext";
+import { useSession, signIn } from "next-auth/react";
 
 interface Product {
   id: string;
@@ -37,6 +38,7 @@ const HighlightedProducts = () => {
   const [notification, setNotification] = useState<string | null>(null);
   const { addToCart } = useCart();
   const router = useRouter();
+  const { status } = useSession();
 
   useEffect(() => {
     async function fetchHighlightedProducts() {
@@ -63,45 +65,88 @@ const HighlightedProducts = () => {
   }, []);
 
   // Handle adding product to cart
-  const handleAddToCart = async (product: Product) => {
-    try {
-      // Add to local cart
-      addToCart({
-        id: product.id,
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: 1,
-        imageUrl: product.image,
-      });
+  const handleAddToCart = React.useCallback(
+    async (product: Product) => {
+      // Check if user is authenticated
+      if (status !== "authenticated") {
+        // Store intended action in localStorage to resume after login
+        localStorage.setItem(
+          "pendingHighlightAction",
+          JSON.stringify({
+            action: "add",
+            productId: product.id,
+          })
+        );
 
-      // Send to server
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: product.id,
-          quantity: 1,
-          container: "TOPLES", // Using valid enum value
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Failed to add item to cart:", errorData);
-        throw new Error("Gagal tambah ke keranjang server");
+        // Redirect to Google OAuth login
+        signIn("google", { callbackUrl: window.location.href });
+        return;
       }
 
-      setNotification("Produk berhasil ditambahkan ke keranjang!");
-      setTimeout(() => setNotification(null), 3000);
-    } catch (error) {
-      console.error(error);
-      setNotification("Gagal menambahkan produk ke keranjang!");
-      setTimeout(() => setNotification(null), 3000);
-    }
-  };
+      try {
+        // Add to local cart
+        addToCart({
+          id: product.id,
+          productId: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          imageUrl: product.image,
+        });
 
-  // Handle direct checkout
+        // Send to server with credentials
+        const response = await fetch("/api/cart", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // Include auth cookies
+          body: JSON.stringify({
+            productId: product.id,
+            quantity: 1,
+            container: "TOPLES",
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Failed to add item to cart:", errorData);
+          throw new Error("Gagal tambah ke keranjang server");
+        }
+
+        setNotification("Produk berhasil ditambahkan ke keranjang!");
+        setTimeout(() => setNotification(null), 3000);
+      } catch (error) {
+        console.error(error);
+        setNotification("Gagal menambahkan produk ke keranjang!");
+        setTimeout(() => setNotification(null), 3000);
+      }
+    },
+    [status, addToCart]
+  );
+
+  // Check for pending actions after login
+  useEffect(() => {
+    if (status === "authenticated") {
+      const pendingAction = localStorage.getItem("pendingHighlightAction");
+
+      if (pendingAction) {
+        try {
+          const actionData = JSON.parse(pendingAction);
+          if (actionData.action === "add" && actionData.productId) {
+            // Find the product and complete the pending add to cart action
+            const product = products.find((p) => p.id === actionData.productId);
+            if (product) {
+              handleAddToCart(product);
+            }
+          }
+          localStorage.removeItem("pendingHighlightAction");
+        } catch (error) {
+          console.error("Error processing pending highlight action:", error);
+        }
+      }
+    }
+  }, [status, products, handleAddToCart]);
+
+  // Handle direct checkout (no authentication required)
   const handleCheckout = (product: Product) => {
     // Create checkout item
     const checkoutItem = [
@@ -123,13 +168,13 @@ const HighlightedProducts = () => {
   };
 
   return (
-    <section className="py-12 px-4 md:px-20">
+    <section className="py-6 sm:py-10 px-4 sm:px-6 md:px-10 lg:px-20">
       {notification && <Notification message={notification} type="success" />}
 
       <div className="container mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-3 sm:mb-6">
           <motion.h2
-            className="text-2xl md:text-3xl font-bold"
+            className="text-lg md:text-xl lg:text-2xl font-bold"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -143,24 +188,27 @@ const HighlightedProducts = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Button variant="link" asChild>
-              <Link href="/shop" className="flex items-center gap-1">
-                Lihat Semua <FaInfoCircle />
+              <Link
+                href="/shop"
+                className="flex items-center gap-1 text-xs sm:text-sm"
+              >
+                Lihat Semua <FaInfoCircle className="h-3 w-3 sm:h-4 sm:w-4" />
               </Link>
             </Button>
           </motion.div>
         </div>
 
         {loading ? (
-          // Loading state with skeletons
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-            {[...Array(4)].map((_, i) => (
+          // Loading state with skeletons - 2 columns on mobile with square images
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
+            {[...Array(6)].map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))}
           </div>
         ) : products.length > 0 ? (
-          // Products found
+          // Products found - 2 columns on mobile with square images
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4"
             variants={containerVariants}
             initial="hidden"
             animate="show"
@@ -180,7 +228,7 @@ const HighlightedProducts = () => {
           </motion.div>
         ) : (
           // No products found
-          <div className="text-center py-10">
+          <div className="text-center py-6">
             <p className="text-gray-500">Tidak ada produk unggulan saat ini.</p>
           </div>
         )}
@@ -189,24 +237,23 @@ const HighlightedProducts = () => {
   );
 };
 
-// Loading skeleton component
+/// Optimized skeleton for mobile view with square images
 const ProductCardSkeleton = () => (
   <div className="h-full">
     <Card className="overflow-hidden h-full flex flex-col">
-      <div className="h-64 relative">
+      {/* Square image container */}
+      <div className="aspect-square w-full relative">
         <Skeleton className="h-full w-full" />
       </div>
-      <CardHeader className="p-4 pb-0">
-        <Skeleton className="h-6 w-3/4" />
+      <CardHeader className="p-1.5 sm:p-3 pb-0">
+        <Skeleton className="h-3 sm:h-5 w-3/4" />
       </CardHeader>
-      <CardContent className="p-4 pt-2 flex-grow">
-        <Skeleton className="h-7 w-1/2 mb-2" />
-        <Skeleton className="h-4 w-full mb-1" />
-        <Skeleton className="h-4 w-3/4" />
+      <CardContent className="p-1.5 sm:p-3 pt-1 flex-grow">
+        <Skeleton className="h-4 sm:h-6 w-1/2 mb-1" />
       </CardContent>
-      <CardFooter className="p-4 pt-0 flex gap-2">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-10" />
+      <CardFooter className="p-1.5 sm:p-3 pt-0 flex gap-1 sm:gap-2">
+        <Skeleton className="h-7 sm:h-8 w-full" />
+        <Skeleton className="h-7 sm:h-8 w-7 sm:w-8" />
       </CardFooter>
     </Card>
   </div>
