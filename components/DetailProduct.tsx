@@ -128,16 +128,12 @@ export default function DetailProduct({
         throw new Error("Gagal menambahkan ke keranjang");
       }
 
-      toast({
-        title: "Berhasil ditambahkan ke keranjang!",
-        description: name + " telah ditambahkan ke keranjang Anda.",
+      toast.success(`${name} telah ditambahkan ke keranjang Anda!`, {
+        description: "Anda bisa melihat keranjang untuk melanjutkan checkout"
       });
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Gagal menambahkan ke keranjang",
-        description: "Silakan coba lagi nanti.",
-        variant: "destructive",
+    } catch {
+      toast.error("Gagal menambahkan ke keranjang", {
+        description: "Silakan coba lagi nanti."
       });
     } finally {
       setAddingToCart(false);
