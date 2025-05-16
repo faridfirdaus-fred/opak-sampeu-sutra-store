@@ -122,6 +122,5 @@ Proyek ini dilisensikan di bawah Lisensi MIT - lihat file [LICENSE](LICENSE) unt
 
 ## 📞 Kontak
 
-Alief Falatehan - [@alief_falatehan](https://twitter.com/alief_falatehan)
+Farid Firdaus - [Farid Firdaus](mailto:fdiraf77@gmail.com)
 
-Link Project: [https://github.com/yourusername/opak-sampeu-sutra-store](https://github.com/yourusername/opak-sampeu-sutra-store)
