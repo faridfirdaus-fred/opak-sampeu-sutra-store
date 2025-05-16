@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Plus, Search, ArrowDownUp } from "lucide-react";
+import { Plus, Search, ArrowDownUp, ImageIcon } from "lucide-react";
 import BannerTable from "../../../../components/admin/banner/bannerTable";
 import { Input } from "../../../../components/ui/input";
 import {
@@ -46,6 +46,7 @@ export default function BannerPage() {
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [bannerToDelete, setBannerToDelete] = useState<Banner | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Pagination & sorting states
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,10 +73,14 @@ export default function BannerPage() {
         }
         const data = await res.json();
         setBanners(data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching banners:", err);
-        setError(err.message || "Failed to load banners. Please try again.");
-        toast.error(err.message || "Failed to load banners. Please try again.");
+        const errorMessage =
+          err && typeof err === "object" && "message" in err
+            ? (err as { message?: string }).message
+            : "Failed to load banners. Please try again.";
+        setError(errorMessage || "Failed to load banners. Please try again.");
+        toast.error(errorMessage || "Failed to load banners. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -164,9 +169,13 @@ export default function BannerPage() {
 
       setIsFormOpen(false);
       setSelectedBanner(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error saving banner:", err);
-      toast.error(err.message || "Failed to save banner. Please try again.");
+      const errorMessage =
+        err && typeof err === "object" && "message" in err
+          ? (err as { message?: string }).message
+          : "Failed to save banner. Please try again.";
+      toast.error(errorMessage || "Failed to save banner. Please try again.");
     }
   };
 
@@ -191,37 +200,116 @@ export default function BannerPage() {
       setBanners((prev) => prev.filter((b) => b.id !== bannerToDelete.id));
       setIsDeleteDialogOpen(false);
       setBannerToDelete(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting banner:", err);
-      toast.error(err.message || "Failed to delete banner. Please try again.");
+      const errorMessage =
+        err && typeof err === "object" && "message" in err
+          ? (err as { message?: string }).message
+          : "Failed to delete banner. Please try again.";
+      toast.error(errorMessage || "Failed to delete banner. Please try again.");
     }
   };
 
+  // Filter banners based on search term
+  const filteredBanners = banners.filter((banner) =>
+    banner.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full p-6">
+      {/* Page Header */}
+      <motion.div
+        variants={item}
+        className="flex items-center justify-between mb-8"
+      >
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-green-100 rounded-lg">
+            <ImageIcon className="h-6 w-6 text-green-600" />
+          </div>
+          <h1 className="text-2xl font-semibold">Banner Management</h1>
+        </div>
+
+        <Button
+          onClick={() => {
+            setIsFormOpen(true);
+          }}
+          className="gap-2"
+        >
+          <Plus className="h-4 w-4" /> Add New Banner
+        </Button>
+      </motion.div>
+
+      {/* Search & Filter Bar */}
+      <motion.div
+        variants={item}
+        className="bg-white rounded-lg shadow-sm p-4 mb-6 border border-gray-100"
+      >
+        <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-between">
+          <div className="relative w-full sm:max-w-xs">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search banners..."
+              className="pl-9 border border-gray-200"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Select
+              value={sortConfig.key}
+              onValueChange={(value) => handleSort(value as keyof Banner)}
+            >
+              <SelectTrigger className="w-[160px] border border-gray-200">
+                <div className="flex items-center gap-2">
+                  <ArrowDownUp className="h-3.5 w-3.5" />
+                  <SelectValue placeholder="Sort by" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="title">Title</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Banner List */}
       <motion.div
         initial="hidden"
         animate="show"
         variants={container}
-        className="flex flex-col h-full space-y-4"
+        className="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
       >
-        {/* Page Header */}
-        <motion.div variants={item} className="w-full px-6">
-          {banners.length === 0 && !isLoading ? (
-            <div className="text-center text-gray-500">
-              No banners available.
+        <motion.div variants={item} className="w-full">
+          {filteredBanners.length === 0 && !isLoading ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <ImageIcon className="h-12 w-12 text-gray-300 mb-4" />
+              <p className="text-lg font-medium text-gray-500">
+                No banners available
+              </p>
+              <p className="text-sm text-gray-400 mt-1">
+                Add a new banner to get started
+              </p>
+              <Button
+                onClick={() => setIsFormOpen(true)}
+                variant="outline"
+                className="mt-4"
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Banner
+              </Button>
             </div>
           ) : (
             <BannerTable
-              banners={banners}
+              banners={filteredBanners}
               isLoading={isLoading}
               error={error}
               sortConfig={sortConfig}
               requestSort={handleSort}
               currentPage={currentPage}
-              totalPages={Math.ceil(banners.length / rowsPerPage)}
+              totalPages={Math.ceil(filteredBanners.length / rowsPerPage)}
               rowsPerPage={rowsPerPage}
-              totalBanners={banners.length}
+              totalBanners={filteredBanners.length}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleRowsPerPageChange}
               onEdit={(banner) => {
@@ -237,52 +325,14 @@ export default function BannerPage() {
           )}
         </motion.div>
 
-        {/* Filter & Actions Bar */}
-        <motion.div
-          variants={item}
-          className="flex px-6 flex-col sm:flex-row gap-2 items-end sm:items-center justify-between"
-        >
-          <div className="relative w-full max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search banners..."
-              className="pl-9 bg-muted/50 border-0 focus-visible:ring-1"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Select
-              value={sortConfig.key}
-              onValueChange={(value) => handleSort(value as keyof Banner)}
-            >
-              <SelectTrigger className="w-[130px] h-9 bg-muted/50 border-0">
-                <div className="flex items-center gap-2">
-                  <ArrowDownUp className="h-3.5 w-3.5" />
-                  <SelectValue placeholder="Sort by" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="title">Title</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button
-              onClick={() => {
-                setIsFormOpen(true);
-              }}
-              className="gap-1"
-              size="sm"
-            >
-              <Plus className="h-4 w-4" /> Add
-            </Button>
-          </div>
-        </motion.div>
-
         {/* Banner Form Modal */}
         {isFormOpen && (
           <BannerForm
             isOpen={isFormOpen}
-            onClose={() => setIsFormOpen(false)}
+            onClose={() => {
+              setIsFormOpen(false);
+              setSelectedBanner(null);
+            }}
             onSubmit={(formData) => handleSaveBanner(formData)}
             initialData={
               selectedBanner

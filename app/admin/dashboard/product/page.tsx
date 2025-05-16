@@ -3,10 +3,16 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Plus,  ArrowDownUp, Star } from "lucide-react";
+import { Plus, ArrowDownUp, Star, Package } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
 import SearchAndFilter from "../../../../components/admin/product/searchAndFilter";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../components/ui/select";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
 import ProductTable from "../../../../components/admin/product/productTable";
@@ -320,11 +326,19 @@ export default function ProductPage() {
         className="flex flex-col h-full space-y-4"
       >
         {/* Page Header */}
-        <motion.div variants={item} className="px-6 py-4">
-          <h1 className="text-2xl font-bold tracking-tight">Produk</h1>
-          <p className="text-sm text-muted-foreground">
-            Kelola inventaris produk dan produk unggulan
-          </p>
+        <motion.div
+          variants={item}
+          className="px-6 py-4 flex items-center gap-3"
+        >
+          <div className="p-2 bg-blue-100 rounded-lg">
+            <Package className="h-6 w-6 text-blue-600" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Produk</h1>
+            <p className="text-sm text-muted-foreground">
+              Kelola inventaris produk dan produk unggulan
+            </p>
+          </div>
         </motion.div>
 
         {/* Tabs & Stats */}
@@ -399,7 +413,9 @@ export default function ProductPage() {
           <div className="flex items-center gap-2">
             <Select
               value={sortConfig.key}
-              onValueChange={(value: "name" | "price" | "stock" | "category") => requestSort(value)}
+              onValueChange={(value: "name" | "price" | "stock" | "category") =>
+                requestSort(value)
+              }
             >
               <SelectTrigger className="w-[130px] h-9 bg-muted/50 border-0">
                 <div className="flex items-center gap-2">
