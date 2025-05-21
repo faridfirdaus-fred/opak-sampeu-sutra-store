@@ -24,27 +24,27 @@ export default function Navbar() {
   }, [pathname]);
 
   // Close logout card when clicking outside
+  // Replace the existing click handler useEffect
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // Check if the click was outside the avatar and the logout card
-      if (showLogoutCard) {
-        const target = event.target as Node;
-        const avatarEl = document.querySelector(".avatar-container");
-        const cardEl = document.querySelector(".logout-card");
+    function handleClickOutside(event: MouseEvent) {
+      if (!showLogoutCard) return;
 
-        if (
-          avatarEl &&
-          cardEl &&
-          !avatarEl.contains(target) &&
-          !cardEl.contains(target)
-        ) {
-          setShowLogoutCard(false);
-        }
+      const target = event.target as Element;
+
+      // Check if the click is outside both the avatar and logout card
+      const isOutsideClick = !(
+        target.closest(".avatar-container") || target.closest(".logout-card")
+      );
+
+      if (isOutsideClick) {
+        setShowLogoutCard(false);
       }
-    };
+    }
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [showLogoutCard]);
 
   const navLinks = [
@@ -104,11 +104,11 @@ export default function Navbar() {
 
             {/* Login/Avatar */}
             {session ? (
-              <div className="relative">
+              <div className="relative avatar-container">
                 <Avatar
                   className="cursor-pointer h-8 w-8 sm:h-9 sm:w-9"
                   onClick={(e) => {
-                    e.stopPropagation(); // Important: Prevents the document click handler from firing
+                    e.stopPropagation();
                     setShowLogoutCard(!showLogoutCard);
                   }}
                 >
@@ -121,9 +121,9 @@ export default function Navbar() {
                   </AvatarFallback>
                 </Avatar>
 
-                {/* Logout Card - Updated positioning and z-index */}
+                {/* Add logout-card class to the Card */}
                 {showLogoutCard && (
-                  <Card className="absolute right-0 mt-2 w-48 z-[100] shadow-lg">
+                  <Card className="absolute right-0 mt-2 w-48 z-[100] shadow-lg logout-card">
                     <CardContent className="p-4">
                       <div className="mb-3 border-b pb-2">
                         <p className="text-sm font-medium truncate">
